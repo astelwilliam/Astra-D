@@ -9,10 +9,13 @@ from typing import Callable
 
 import ollama
 
+
 import filesearch
 import memory
 import notes
 import tasks
+import pdf_utils
+
 
 MODEL = "qwen2.5:3b"
 SYSTEM_PROMPT = (
@@ -57,6 +60,7 @@ Commands:
   task delete <id>             Delete a task
 
   search <directory> <query>   Search filenames recursively
+  pdf <file>                   Read a PDF file
   quit | exit                  Exit Astra-D
 
 Tips:
@@ -150,6 +154,95 @@ def _handle_search_command(args: list[str]) -> str:
         return "No matching files found."
     return "\n".join(matches)
 
+def _handle_pdf_command(args: list[str]) -> str:
+    if not args:
+        raise ValueError("Usage: pdf <file>")
+
+    file_path = args[0]
+
+    text = pdf_utils.read_pdf(file_path)
+
+    if not text:
+        return "No text found in PDF."
+
+    if len(text) > 3000:
+        text = text[:3000] + "\n\n[Output truncated]"
+
+    return text
+
+def _handle_summarize_command(args):
+    if not args:
+        return "Usage: summarize <pdf-file>"
+
+    file_path = " ".join(args)
+
+    try:
+        text = pdf_utils.read_pdf(file_path)
+
+        prompt = f"""
+Summarize the following PDF:
+
+{text[:10000]}
+"""
+
+        response = ollama.chat(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        return response["message"]["content"]
+
+    except Exception as e:
+        return f"Error: {e}"
+    
+
+
+def _handle_askpdf_command(args):
+    if len(args) < 2:
+        return "Usage: askpdf <file> <question>"
+
+    file_path = args[0]
+    question = " ".join(args[1:])
+
+    try:
+        text = pdf_utils.read_pdf(file_path)
+
+        prompt = f"""
+You are analyzing a PDF document.
+
+Use ONLY the document content.
+
+If the answer is found, provide a detailed response.
+
+If the document is a question bank, identify:
+- important theories
+- important concepts
+- repeated topics
+- likely exam questions
+
+DOCUMENT:
+{text[:30000]}
+
+QUESTION:
+{question}
+"""
+
+        response = ollama.chat(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        return response["message"]["content"]
+
+    except Exception as e:
+        return f"Error: {e}"
+
 
 def _handle_chat(message: str) -> str:
     history = memory.load_conversations()
@@ -162,12 +255,27 @@ def _handle_chat(message: str) -> str:
 def dispatch(line: str) -> str | None:
     """Process one user input line. Returns output text or None to exit."""
     stripped = line.strip()
+
     if not stripped:
         return ""
 
     lowered = stripped.lower()
+
     if lowered in {"quit", "exit"}:
         return None
+
+    if lowered.startswith("my name is "):
+        name = stripped[11:].strip()
+        memory.remember("name", name)
+        return f"I'll remember that. Your name is {name}."
+
+    if lowered == "what is my name":
+        name = memory.recall("name")
+
+        if name:
+            return f"Your name is {name}."
+
+        return "I don't know your name yet."
 
     try:
         parts = shlex.split(stripped, posix=(os.name != "nt"))
@@ -188,8 +296,10 @@ def dispatch(line: str) -> str | None:
 
     if command == "chat":
         message = " ".join(args).strip()
+
         if not message:
             raise ValueError("Usage: chat <message>")
+
         return _handle_chat(message)
 
     if command == "note":
@@ -200,6 +310,15 @@ def dispatch(line: str) -> str | None:
 
     if command == "search":
         return _handle_search_command(args)
+
+    if command == "pdf":
+        return _handle_pdf_command(args)
+
+    if command == "summarize":
+        return _handle_summarize_command(args)
+    
+    if command == "askpdf":
+        return _handle_askpdf_command(args)
 
     return _handle_chat(stripped)
 
