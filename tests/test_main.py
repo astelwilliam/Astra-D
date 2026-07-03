@@ -17,6 +17,8 @@ class MainModuleTests(unittest.TestCase):
         os.environ["ASTRA_D_DATA_DIR"] = self.temp_dir.name
 
     def tearDown(self) -> None:
+        main.ACTIVE_DOCUMENT = None
+        main.ACTIVE_DOCUMENT_PATH = None
         os.environ.pop("ASTRA_D_DATA_DIR", None)
         self.temp_dir.cleanup()
 
@@ -62,6 +64,25 @@ class MainModuleTests(unittest.TestCase):
     def test_search_command(self) -> None:
         output = main.dispatch(f"search {self.temp_dir.name} test")
         self.assertIsNotNone(output)
+
+    @patch("main.retrieval.index_document", return_value=2)
+    @patch("main.pdf_utils.read_pdf", return_value="alpha beta " * 120)
+    def test_loadpdf_indexes_document_chunks(self, _mock_read_pdf, mock_index) -> None:
+        output = main.dispatch("loadpdf sample.pdf")
+        self.assertIn("Indexed 2 chunks", output or "")
+        mock_index.assert_called_once()
+
+    @patch("main.retrieval.semantic_search")
+    def test_retrieve_returns_top_five_semantic_matches(self, mock_search) -> None:
+        main.ACTIVE_DOCUMENT_PATH = "sample.pdf"
+        mock_search.return_value = [
+            main.retrieval.SemanticMatch("alpha chunk", "sample.pdf", 0, 0.1)
+        ]
+
+        output = main.dispatch("retrieve alpha")
+
+        mock_search.assert_called_once_with("alpha", top_k=5, source="sample.pdf")
+        self.assertIn("alpha chunk", output or "")
 
     def test_clear_history(self) -> None:
         memory.add_message("user", "hello")
