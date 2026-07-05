@@ -66,11 +66,18 @@ class MainModuleTests(unittest.TestCase):
         self.assertIsNotNone(output)
 
     @patch("main.retrieval.index_document", return_value=2)
+    @patch("main.pdf_utils.file_hash", return_value="dummy_hash")
     @patch("main.pdf_utils.read_pdf", return_value="alpha beta " * 120)
-    def test_loadpdf_indexes_document_chunks(self, _mock_read_pdf, mock_index) -> None:
+    def test_loadpdf_indexes_document_chunks(
+    self,
+        _mock_read_pdf,
+        _mock_file_hash,
+        mock_index,
+    ) -> None:
         output = main.dispatch("loadpdf sample.pdf")
         self.assertIn("Indexed 2 chunks", output or "")
         mock_index.assert_called_once()
+    
 
     @patch("main.retrieval.semantic_search")
     def test_retrieve_returns_top_five_semantic_matches(self, mock_search) -> None:

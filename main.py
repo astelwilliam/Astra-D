@@ -364,7 +364,7 @@ def _handle_retrieve_command(args: list[str]) -> str:
 
     matches = retrieval.semantic_search(
         query,
-        top_k=8,
+        top_k=5,
         source=ACTIVE_DOCUMENT_PATH,
     )
     return _format_semantic_matches(matches)
