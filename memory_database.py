@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 from semantic_memory import MemoryEntry
@@ -68,6 +69,43 @@ class MemoryDatabase:
         )
 
         self.connection.commit()
+
+    def load_memories(self) -> list[MemoryEntry]:
+        """Load all stored memories from SQLite."""
+
+        cursor = self.connection.cursor()
+
+        rows = cursor.execute(
+            """
+            SELECT
+                id,
+                text,
+                entities,
+                noun_chunks,
+                keywords,
+                timestamp,
+                importance
+            FROM memories
+            ORDER BY timestamp
+            """
+        ).fetchall()
+
+        memories: list[MemoryEntry] = []
+
+        for row in rows:
+            memories.append(
+                MemoryEntry(
+                    id=row[0],
+                    text=row[1],
+                    entities=json.loads(row[2]),
+                    noun_chunks=json.loads(row[3]),
+                    keywords=json.loads(row[4]),
+                    timestamp=datetime.fromisoformat(row[5]),
+                    importance=row[6],
+                )
+            )
+
+        return memories
 
     def close(self) -> None:
         """Close the SQLite connection."""
