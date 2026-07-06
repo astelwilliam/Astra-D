@@ -1,37 +1,85 @@
 # Astra-D
 
-Production-ready local AI assistant powered by [Ollama](https://ollama.com/) and `qwen2.5:3b`.
+**Astra-D** is a local-first AI assistant powered by Ollama that combines conversational AI with persistent semantic memory, intelligent retrieval, note management, task management, and document search.
 
-## Features
+Unlike traditional chatbots, Astra-D remembers previous conversations, retrieves relevant memories, and uses them to generate context-aware responses while keeping your data entirely on your own machine.
 
-- Interactive chat with conversation history
-- Persistent memory in `data/memory.json`
-- Notes management in `data/notes.json`
-- Task management in `data/tasks.json`
-- Recursive filename search
+---
 
-## Requirements
+# Features
 
-- Python 3.10+
-- [Ollama](https://ollama.com/download) installed and running locally
+## AI Conversation
 
-## Installation
+- Interactive chat powered by Ollama
+- Conversation history
+- Context-aware responses
+- Memory-augmented prompting
+
+## Semantic Memory
+
+- NLP-based memory extraction
+- Persistent SQLite database
+- Automatic memory restoration
+- Memory retrieval by relevance
+- Long-term conversational memory
+
+## Productivity
+
+- Notes management
+- Task management
+- Recursive file search
+
+## Engineering
+
+- Modular architecture
+- SQLite persistence
+- Test-driven development
+- 58 automated unit tests
+
+---
+
+# Technology Stack
+
+- Python 3.12
+- Ollama
+- SQLite
+- spaCy
+- Pytest
+- Git
+
+---
+
+# Requirements
+
+- Python 3.12+
+- Ollama installed locally
+
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/astelwilliam/Astra-D.git
 cd Astra-D
+```
+
+Create a virtual environment:
+
+```bash
 python -m venv .venv
 ```
 
-Activate the virtual environment:
+Activate the environment.
 
-**Windows**
+### Windows
 
 ```powershell
 .venv\Scripts\activate
 ```
 
-**macOS / Linux**
+### Linux / macOS
 
 ```bash
 source .venv/bin/activate
@@ -43,42 +91,54 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## Ollama Setup
+---
 
-1. Install Ollama from https://ollama.com/download
-2. Start the Ollama service
-3. Pull the model:
+# Ollama Setup
+
+Install Ollama:
+
+https://ollama.com/download
+
+Pull the required model:
 
 ```bash
 ollama pull qwen2.5:3b
 ```
 
-4. Verify the model is available:
+Verify:
 
 ```bash
 ollama list
 ```
 
-## Usage
+Start the Ollama service before launching Astra-D.
 
-Start the assistant:
+---
+
+# Running Astra-D
 
 ```bash
 python main.py
 ```
 
-### Chat
+---
+
+# Commands
+
+## Chat
 
 ```text
 astra-d> hello
-astra-d> chat What is Python?
+astra-d> What is Python?
 astra-d> history
 astra-d> clear
 ```
 
-Plain text without a command is treated as chat input.
+Plain text is automatically treated as chat input.
 
-### Notes
+---
+
+## Notes
 
 ```text
 astra-d> note add Buy groceries
@@ -86,55 +146,205 @@ astra-d> note list
 astra-d> note delete <note-id>
 ```
 
-### Tasks
+---
+
+## Tasks
 
 ```text
-astra-d> task add Fix memory module --desc Add error handling
+astra-d> task add Finish memory module
 astra-d> task list
 astra-d> task complete <task-id>
 astra-d> task delete <task-id>
 ```
 
-### File Search
+---
+
+## File Search
 
 ```text
 astra-d> search . readme
-astra-d> search C:\Users\you\Documents report
+astra-d> search C:\Users\Astel\Documents report
 ```
 
-### Exit
+---
+
+## Exit
 
 ```text
 astra-d> quit
 ```
 
-## Project Structure
+---
+
+# Project Structure
 
 ```text
 Astra-D/
-%%% main.py
-%%% memory.py
-%%% notes.py
-%%% tasks.py
-%%% filesearch.py
-%%% requirements.txt
-%%% tests/
-%%% data/
-    %%% memory.json
-    %%% notes.json
-    %%% tasks.json
+│
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── ROADMAP.md
+│   ├── CHANGELOG.md
+│   ├── MEMORY.md
+│   ├── API.md
+│   └── CONTRIBUTING.md
+│
+├── tests/
+├── data/
+│
+├── main.py
+├── memory_engine.py
+├── memory_database.py
+├── semantic_memory.py
+├── memory_nlp.py
+├── retrieval.py
+├── prompt_builder.py
+├── notes.py
+├── tasks.py
+├── filesearch.py
+├── requirements.txt
+└── README.md
 ```
 
-JSON files in `data/` are created automatically on first use.
+---
 
-## Run Tests
+# Memory Architecture
+
+```text
+User Message
+      │
+      ▼
+ NLP Analysis
+      │
+      ▼
+ MemoryEntry
+      │
+      ▼
+ Semantic Memory (RAM)
+      │
+      ▼
+ SQLite Database
+      │
+      ▼
+ Retrieval Engine
+      │
+      ▼
+ Prompt Builder
+      │
+      ▼
+ Ollama
+      │
+      ▼
+ AI Response
+```
+
+---
+
+# Documentation
+
+The complete documentation is available in the `docs/` folder.
+
+| Document | Description |
+|----------|-------------|
+| ARCHITECTURE.md | System architecture |
+| ROADMAP.md | Development roadmap |
+| CHANGELOG.md | Project history |
+| MEMORY.md | Memory system |
+| API.md | API reference |
+| CONTRIBUTING.md | Contribution guide |
+
+---
+
+# Running Tests
+
+Run the complete test suite:
 
 ```bash
-python -m unittest discover -s tests -v
+pytest
 ```
 
-## Environment Variables
+Current status:
 
-| Variable | Purpose |
-|----------|---------|
-| `ASTRA_D_DATA_DIR` | Override the default `data/` directory (used by tests) |
+```text
+58 Passed
+0 Failed
+```
+
+---
+
+# Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| ASTRA_D_DATA_DIR | Override the default `data/` directory for testing |
+
+---
+
+# Current Version
+
+**v0.6.0-alpha**
+
+## Completed
+
+- ✅ Interactive AI Chat
+- ✅ Notes Management
+- ✅ Task Management
+- ✅ Recursive File Search
+- ✅ Semantic Memory
+- ✅ SQLite Persistence
+- ✅ Automatic Memory Restoration
+- ✅ Memory Retrieval
+- ✅ Prompt Builder
+- ✅ Memory-Augmented Chat
+- ✅ 58 Passing Tests
+
+---
+
+# Roadmap
+
+## v0.7.0-alpha
+
+- Intelligent memory ranking
+- Memory importance scoring
+- Memory updating
+- Memory decay
+- User profile memory
+
+## v0.8.0-alpha
+
+- Python tool integration
+- Web search
+- PDF analysis
+- OCR support
+- Tool orchestration
+
+## v0.9.0-alpha
+
+- Autonomous planning
+- Goal management
+- Reflection system
+- Workflow execution
+
+## v1.0.0
+
+- Fully autonomous local AI assistant
+- Long-term personal knowledge
+- Advanced reasoning
+- Multi-agent architecture
+
+---
+
+# Development Principles
+
+- Local-first
+- Privacy-first
+- Modular architecture
+- Test-driven development
+- Open source
+- Extensible design
+
+---
+
+# License
+
+This project is currently under active development.
