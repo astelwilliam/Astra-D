@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 from pathlib import Path
+
+from semantic_memory import MemoryEntry
 
 
 class MemoryDatabase:
@@ -31,6 +34,37 @@ class MemoryDatabase:
                 importance REAL
             )
             """
+        )
+
+        self.connection.commit()
+
+    def save_memory(self, memory: MemoryEntry) -> None:
+        """Persist a MemoryEntry to SQLite."""
+
+        cursor = self.connection.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO memories (
+                id,
+                text,
+                entities,
+                noun_chunks,
+                keywords,
+                timestamp,
+                importance
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                memory.id,
+                memory.text,
+                json.dumps(memory.entities),
+                json.dumps(memory.noun_chunks),
+                json.dumps(memory.keywords),
+                memory.timestamp.isoformat(),
+                memory.importance,
+            ),
         )
 
         self.connection.commit()

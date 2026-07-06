@@ -6,23 +6,21 @@ frameworks, no embeddings, and no machine learning of its own — it
 simply wires analysis to storage.
 """
 
+
+
 from __future__ import annotations
+
+from memory_database import MemoryDatabase
 
 from memory_nlp import analyze
 from semantic_memory import MemoryEntry, SemanticMemory
 
 
 class MemoryEngine:
-    """Coordinates text analysis and semantic memory storage.
-
-    Each MemoryEngine owns a single SemanticMemory instance. Callers
-    hand it raw text; it runs NLP analysis and persists the result
-    in RAM as a MemoryEntry.
-    """
-
     def __init__(self) -> None:
         """Initialize the engine with a fresh, empty SemanticMemory."""
         self._memory = SemanticMemory()
+        self._database = MemoryDatabase()
 
     @property
     def semantic_memory(self) -> SemanticMemory:
@@ -39,7 +37,14 @@ class MemoryEngine:
             The MemoryEntry that was created and stored.
         """
         nlp_result = analyze(text)
-        return self._memory.store(text, nlp_result)
+
+        entry = self._memory.store(text, nlp_result)
+
+        self._database.save_memory(entry)
+
+        return entry
+
+    
 
     def count(self) -> int:
         """Return the total number of stored memories.
