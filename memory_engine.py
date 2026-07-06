@@ -24,6 +24,11 @@ class MemoryEngine:
         """Initialize the engine with a fresh, empty SemanticMemory."""
         self._memory = SemanticMemory()
 
+    @property
+    def semantic_memory(self) -> SemanticMemory:
+        """Expose the underlying semantic memory (read-only)."""
+        return self._memory    
+
     def remember(self, text: str) -> MemoryEntry:
         """Analyze text and store it as a new memory.
 

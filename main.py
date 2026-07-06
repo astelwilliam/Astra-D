@@ -1,6 +1,8 @@
 """Astra-D: production-ready local AI assistant."""
 
 from __future__ import annotations
+from memory_engine import MemoryEngine
+from retrieval_engine import RetrievalEngine
 
 import os
 import re
@@ -29,7 +31,12 @@ import retrieval
 
 
 MODEL = "qwen2.5:3b"
+
+MEMORY_ENGINE = MemoryEngine()
+RETRIEVAL_ENGINE = RetrievalEngine(MEMORY_ENGINE.semantic_memory)
+
 ACTIVE_DOCUMENT_PATH = None
+
 SYSTEM_PROMPT = (
     "You are Astra-D, a helpful local AI assistant. "
     "Be concise, practical, and friendly."
@@ -370,11 +377,44 @@ def _handle_retrieve_command(args: list[str]) -> str:
     return _format_semantic_matches(matches)
 
 
+
+def _build_memory_context(message: str) -> str:
+    """Build a text context from relevant semantic memories."""
+
+    memories = RETRIEVAL_ENGINE.retrieve(message, top_k=3)
+
+    if not memories:
+        return ""
+
+    lines = ["Relevant memories:"]
+
+    for memory in memories:
+        lines.append(f"- {memory.text}")
+
+    return "\n".join(lines)
+
+
+
 def _handle_chat(message: str) -> str:
     history = memory.load_conversations()
-    reply = chat_with_ollama(message, history)
+
+    memory_context = _build_memory_context(message)
+
+    if memory_context:
+        enhanced_message = (
+            f"{memory_context}\n\n"
+            f"Current user message:\n{message}"
+        )
+    else:
+        enhanced_message = message
+
+    reply = chat_with_ollama(enhanced_message, history)
+
+    MEMORY_ENGINE.remember(message)
+
     memory.add_message("user", message)
     memory.add_message("assistant", reply)
+
     return reply
 
 
