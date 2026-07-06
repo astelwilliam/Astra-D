@@ -3,6 +3,7 @@
 from __future__ import annotations
 from memory_engine import MemoryEngine
 from retrieval_engine import RetrievalEngine
+from prompt_builder import PromptBuilder
 
 import os
 import re
@@ -34,6 +35,7 @@ MODEL = "qwen2.5:3b"
 
 MEMORY_ENGINE = MemoryEngine()
 RETRIEVAL_ENGINE = RetrievalEngine(MEMORY_ENGINE.semantic_memory)
+PROMPT_BUILDER = PromptBuilder(RETRIEVAL_ENGINE)
 
 ACTIVE_DOCUMENT_PATH = None
 
@@ -398,22 +400,14 @@ def _build_memory_context(message: str) -> str:
 def _handle_chat(message: str) -> str:
     history = memory.load_conversations()
 
-    memory_context = _build_memory_context(message)
+    enriched_prompt = PROMPT_BUILDER.build(message)
 
-    if memory_context:
-        enhanced_message = (
-            f"{memory_context}\n\n"
-            f"Current user message:\n{message}"
-        )
-    else:
-        enhanced_message = message
-
-    reply = chat_with_ollama(enhanced_message, history)
-
-    MEMORY_ENGINE.remember(message)
+    reply = chat_with_ollama(enriched_prompt, history)
 
     memory.add_message("user", message)
     memory.add_message("assistant", reply)
+
+    MEMORY_ENGINE.remember(message)
 
     return reply
 

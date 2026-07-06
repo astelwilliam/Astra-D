@@ -9,7 +9,7 @@ future concern and is intentionally not implemented here.
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
@@ -48,8 +48,15 @@ class SemanticMemory:
     """
 
     def __init__(self) -> None:
-        """Initialize an empty in-memory store."""
-        self._memories: list[MemoryEntry] = []
+       """Initialize an empty in-memory store."""
+       self._memories: list[MemoryEntry] = []
+    
+
+    
+    def add(self, entry: MemoryEntry) -> None:
+        """Add an existing MemoryEntry to semantic memory."""
+
+        self._memories.append(entry)
 
     def store(self, text: str, nlp_result: Any) -> MemoryEntry:
         """Create and store a MemoryEntry from an NLPResult.

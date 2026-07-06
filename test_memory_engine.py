@@ -7,14 +7,14 @@ from semantic_memory import MemoryEntry
 
 
 def test_remember_stores_one_memory():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     assert engine.count() == 0
     engine.remember("Barack Obama was born in Hawaii.")
     assert engine.count() == 1
 
 
 def test_count_increases_correctly():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     assert engine.count() == 0
     engine.remember("First memory.")
     assert engine.count() == 1
@@ -25,7 +25,7 @@ def test_count_increases_correctly():
 
 
 def test_all_memories_returns_memory_entry_objects():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     engine.remember("The cat sat on the mat.")
     memories = engine.all_memories()
     assert len(memories) == 1
@@ -33,7 +33,7 @@ def test_all_memories_returns_memory_entry_objects():
 
 
 def test_stored_entities_are_preserved():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     entry = engine.remember("Barack Obama was born in Hawaii.")
     stored = engine.all_memories()[0]
     assert stored.entities == entry.entities
@@ -42,7 +42,7 @@ def test_stored_entities_are_preserved():
 
 
 def test_stored_keywords_are_preserved():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     entry = engine.remember("The cat is sitting on the mat, quietly.")
     stored = engine.all_memories()[0]
     assert stored.keywords == entry.keywords
@@ -51,7 +51,7 @@ def test_stored_keywords_are_preserved():
 
 
 def test_multiple_memories_can_be_stored():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     first = engine.remember("Astra-D runs locally on Ollama.")
     second = engine.remember("The RTX 2050 has limited VRAM.")
 
@@ -67,7 +67,7 @@ def test_multiple_memories_can_be_stored():
 
 
 def test_empty_text_is_handled_safely():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     entry = engine.remember("")
     assert engine.count() == 1
     assert entry.entities == []
@@ -76,7 +76,7 @@ def test_empty_text_is_handled_safely():
 
 
 def test_whitespace_only_text_is_handled_safely():
-    engine = MemoryEngine(":memory:")
+    engine = MemoryEngine(db_path=":memory:")
     entry = engine.remember("   \n\t  ")
     assert engine.count() == 1
     assert entry.entities == []

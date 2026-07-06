@@ -14,15 +14,19 @@ from semantic_memory import MemoryEntry, SemanticMemory
 class MemoryEngine:
     """Coordinates text analysis, in-memory storage, and persistence."""
 
-    def __init__(self, db_path: str = "astra_memory.db") -> None:
-        """Initialize the engine."""
+    def __init__(
+        self,
+        db_path: str = "astra_memory.db",
+        load_existing: bool = True,
+    ) -> None:
+         """Initialize the engine."""
 
-        self._memory = SemanticMemory()
-        self._database = MemoryDatabase(db_path)
+         self._memory = SemanticMemory()
+         self._database = MemoryDatabase(db_path)
 
-        # Load previously stored memories into RAM
-        for memory in self._database.load_memories():
-            self._memory._memories.append(memory)
+         if load_existing:
+            for memory in self._database.load_memories():
+              self._memory.add(memory)
 
     @property
     def semantic_memory(self) -> SemanticMemory:
