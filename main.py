@@ -4,6 +4,9 @@ from __future__ import annotations
 from memory_engine import MemoryEngine
 from retrieval_engine import RetrievalEngine
 from prompt_builder import PromptBuilder
+from conversation_database import ConversationDatabase
+from conversation.manager import ConversationManager
+
 
 import os
 import re
@@ -36,6 +39,8 @@ MODEL = "qwen2.5:3b"
 MEMORY_ENGINE = MemoryEngine()
 RETRIEVAL_ENGINE = RetrievalEngine(MEMORY_ENGINE.semantic_memory)
 PROMPT_BUILDER = PromptBuilder(RETRIEVAL_ENGINE)
+CONVERSATION_DB = ConversationDatabase()
+CONVERSATION_MANAGER = ConversationManager(CONVERSATION_DB)
 
 ACTIVE_DOCUMENT_PATH = None
 
@@ -398,14 +403,18 @@ def _build_memory_context(message: str) -> str:
 
 
 def _handle_chat(message: str) -> str:
-    history = memory.load_conversations()
+    if CONVERSATION_MANAGER.get_active_conversation() is None:
+        if CONVERSATION_MANAGER.resume_last_conversation() is None:
+            CONVERSATION_MANAGER.new_conversation("Chat")
+
+    history = CONVERSATION_MANAGER.get_history()
 
     enriched_prompt = PROMPT_BUILDER.build(message)
 
     reply = chat_with_ollama(enriched_prompt, history)
 
-    memory.add_message("user", message)
-    memory.add_message("assistant", reply)
+    CONVERSATION_MANAGER.add_user_message(message)
+    CONVERSATION_MANAGER.add_assistant_message(reply)
 
     MEMORY_ENGINE.remember(message)
 
@@ -521,6 +530,9 @@ def run() -> None:
     memory.load_conversations()
     notes.load_notes()
     tasks.load_tasks()
+
+    if CONVERSATION_MANAGER.resume_last_conversation() is None:
+       CONVERSATION_MANAGER.new_conversation("Chat")
 
     print("Astra-D local assistant")
     print(f"Model: {MODEL}")

@@ -5,16 +5,29 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+
+
 import main
 import memory
 import notes
 import tasks
 
 
+from conversation_database import ConversationDatabase
+from conversation.manager import ConversationManager
+
+
 class MainModuleTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
         os.environ["ASTRA_D_DATA_DIR"] = self.temp_dir.name
+    
+        # Reset the conversation system for each test.
+        main.CONVERSATION_DB = ConversationDatabase(":memory:")
+        main.CONVERSATION_MANAGER = ConversationManager(
+            main.CONVERSATION_DB
+        )
+
 
     def tearDown(self) -> None:
         main.ACTIVE_DOCUMENT = None
@@ -32,10 +45,17 @@ class MainModuleTests(unittest.TestCase):
     @patch("main.chat_with_ollama", return_value="Hello from Astra-D")
     def test_chat_command(self, mock_chat) -> None:
         output = main.dispatch("chat hello there")
+    
         self.assertEqual(output, "Hello from Astra-D")
         mock_chat.assert_called_once()
-        history = memory.load_conversations()
+    
+        history = main.CONVERSATION_MANAGER.get_history()
+    
         self.assertEqual(len(history), 2)
+        self.assertEqual(history[0]["role"], "user")
+        self.assertEqual(history[0]["content"], "hello there")
+        self.assertEqual(history[1]["role"], "assistant")
+        self.assertEqual(history[1]["content"], "Hello from Astra-D")
 
     @patch("main.chat_with_ollama", return_value="Reply")
     def test_plain_text_routes_to_chat(self, _mock_chat) -> None:
