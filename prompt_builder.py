@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from retrieval_engine import RetrievalEngine
+from astra_d.retrieval.engine import RetrievalEngine
 
 
 class PromptBuilder:

@@ -1,7 +1,8 @@
 """Astra-D: production-ready local AI assistant."""
 
 from astra_d.memory.engine import MemoryEngine
-from retrieval_engine import RetrievalEngine
+from astra_d.retrieval.engine import RetrievalEngine
+from astra_d.retrieval import base as retrieval
 from prompt_builder import PromptBuilder
 
 from astra_d.conversation.database import ConversationDatabase
@@ -31,7 +32,7 @@ import memory
 import notes
 import tasks
 from astra_d.documents import pdf as pdf_utils
-import retrieval
+from astra_d.retrieval import base as retrieval
 
 
 MODEL = "qwen2.5:3b"

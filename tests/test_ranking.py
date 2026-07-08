@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from ranking import score_memory, rank_memories
+from astra_d.retrieval.ranking import score_memory, rank_memories
 from astra_d.memory.semantic import MemoryEntry
 
 

@@ -1,6 +1,6 @@
 from astra_d.memory.engine import MemoryEngine
 from prompt_builder import PromptBuilder
-from retrieval_engine import RetrievalEngine
+from astra_d.retrieval.engine import RetrievalEngine
 
 
 def test_prompt_without_memories():

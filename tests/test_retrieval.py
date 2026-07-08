@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-import retrieval
+from astra_d.retrieval import base as retrieval
 
 
 class FakeCollection:
@@ -56,8 +56,7 @@ class RetrievalModuleTests(unittest.TestCase):
 
     def test_index_document_stores_chunks_in_chroma(self) -> None:
         fake_collection = FakeCollection()
-        with patch("retrieval._get_collection", return_value=fake_collection), patch(
-            "retrieval.embed_texts",
+        with patch("astra_d.retrieval.base._get_collection", return_value=fake_collection), patch("astra_d.retrieval.base.embed_texts",
             side_effect=lambda texts: [[float(index)] for index, _text in enumerate(texts)],
         ):
             count = retrieval.index_document("doc.pdf", "alpha " * 300)
@@ -69,8 +68,7 @@ class RetrievalModuleTests(unittest.TestCase):
 
     def test_semantic_search_requests_top_five(self) -> None:
         fake_collection = FakeCollection()
-        with patch("retrieval._get_collection", return_value=fake_collection), patch(
-            "retrieval.embed_texts",
+        with patch("astra_d.retrieval.base._get_collection", return_value=fake_collection), patch("astra_d.retrieval.base.embed_texts",
             return_value=[[0.1, 0.2]],
         ):
             matches = retrieval.semantic_search("alpha policy", top_k=5, source="doc.pdf")
