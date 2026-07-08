@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from semantic_memory import MemoryEntry, SemanticMemory
-from memory_retrieval import retrieve_memories
+from astra_d.memory.semantic import MemoryEntry, SemanticMemory
+from astra_d.memory.retrieval import retrieve_memories
 
 
 class RetrievalEngine:

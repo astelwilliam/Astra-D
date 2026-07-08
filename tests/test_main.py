@@ -13,8 +13,8 @@ import notes
 import tasks
 
 
-from conversation_database import ConversationDatabase
-from conversation.manager import ConversationManager
+from astra_d.conversation.database import ConversationDatabase
+from astra_d.conversation.manager import ConversationManager
 
 
 class MainModuleTests(unittest.TestCase):

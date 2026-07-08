@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from memory_engine import MemoryEngine
-from semantic_memory import MemoryEntry
+from astra_d.memory.engine import MemoryEngine
+from astra_d.memory.semantic import MemoryEntry
 
 
 def test_remember_stores_one_memory():

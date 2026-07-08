@@ -1,6 +1,6 @@
 """Memory ranking utilities for Astra-D."""
 
-from semantic_memory import MemoryEntry
+from astra_d.memory.semantic import MemoryEntry
 
 
 def score_memory(memory: MemoryEntry, query: str) -> int:

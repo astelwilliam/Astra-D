@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from memory_retrieval import retrieve_memories
-from semantic_memory import MemoryEntry, SemanticMemory
+from astra_d.memory.retrieval import retrieve_memories
+from astra_d.memory.semantic import MemoryEntry, SemanticMemory
 
 
 def make_memory(text, keywords):

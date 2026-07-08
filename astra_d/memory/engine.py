@@ -6,9 +6,9 @@ to semantic memory and SQLite persistence.
 
 from __future__ import annotations
 
-from memory_database import MemoryDatabase
-from memory_nlp import analyze
-from semantic_memory import MemoryEntry, SemanticMemory
+from astra_d.memory.database import MemoryDatabase
+from astra_d.memory.nlp import analyze
+from astra_d.memory.semantic import MemoryEntry, SemanticMemory
 
 
 class MemoryEngine:

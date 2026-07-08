@@ -1,4 +1,4 @@
-from conversation_database import ConversationDatabase
+from astra_d.conversation.database import ConversationDatabase
 
 
 class ConversationManager:

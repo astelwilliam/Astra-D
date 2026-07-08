@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import memory_nlp
+from astra_d.memory import nlp as memory_nlp
 
 
 def test_entity_extraction():

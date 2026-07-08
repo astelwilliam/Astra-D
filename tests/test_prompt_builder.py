@@ -1,4 +1,4 @@
-from memory_engine import MemoryEngine
+from astra_d.memory.engine import MemoryEngine
 from prompt_builder import PromptBuilder
 from retrieval_engine import RetrievalEngine
 

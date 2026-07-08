@@ -7,7 +7,7 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-from semantic_memory import MemoryEntry
+from astra_d.memory.semantic import MemoryEntry
 
 
 class MemoryDatabase:

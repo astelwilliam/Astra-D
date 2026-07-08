@@ -1,5 +1,5 @@
-from conversation_database import ConversationDatabase
-from conversation.manager import ConversationManager
+from astra_d.conversation.database import ConversationDatabase
+from astra_d.conversation.manager import ConversationManager
 
 
 def test_new_conversation():

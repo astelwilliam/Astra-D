@@ -1,5 +1,5 @@
-from memory_nlp import analyze
-from semantic_memory import SemanticMemory
+from astra_d.memory.nlp import analyze
+from astra_d.memory.semantic import SemanticMemory
 
 memory = SemanticMemory()
 

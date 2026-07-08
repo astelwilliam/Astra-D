@@ -1,11 +1,11 @@
 """Astra-D: production-ready local AI assistant."""
 
-from __future__ import annotations
-from memory_engine import MemoryEngine
+from astra_d.memory.engine import MemoryEngine
 from retrieval_engine import RetrievalEngine
 from prompt_builder import PromptBuilder
-from conversation_database import ConversationDatabase
-from conversation.manager import ConversationManager
+
+from astra_d.conversation.database import ConversationDatabase
+from astra_d.conversation.manager import ConversationManager
 
 
 import os

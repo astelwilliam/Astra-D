@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from ranking import score_memory, rank_memories
-from semantic_memory import MemoryEntry
+from astra_d.memory.semantic import MemoryEntry
 
 
 def make_memory(text: str, keywords: list[str]) -> MemoryEntry:

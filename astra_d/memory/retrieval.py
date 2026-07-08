@@ -1,6 +1,6 @@
 """Memory retrieval for Astra-D."""
 
-from semantic_memory import MemoryEntry, SemanticMemory
+from astra_d.memory.semantic import MemoryEntry, SemanticMemory
 from ranking import rank_memories
 
 
