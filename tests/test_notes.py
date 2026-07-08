@@ -4,7 +4,7 @@ import os
 import tempfile
 import unittest
 
-import notes
+from astra_d.capabilities import notes
 
 
 class NotesModuleTests(unittest.TestCase):

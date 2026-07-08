@@ -9,9 +9,8 @@ from unittest.mock import patch
 
 import main
 import memory
-import notes
-import tasks
-
+from astra_d.capabilities import notes
+from astra_d.capabilities import tasks
 
 from astra_d.conversation.database import ConversationDatabase
 from astra_d.conversation.manager import ConversationManager

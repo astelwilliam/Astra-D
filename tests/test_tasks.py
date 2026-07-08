@@ -4,7 +4,7 @@ import os
 import tempfile
 import unittest
 
-import tasks
+from astra_d.capabilities import tasks
 
 
 class TasksModuleTests(unittest.TestCase):

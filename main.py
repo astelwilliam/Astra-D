@@ -29,8 +29,8 @@ except Exception as exc:  # noqa: BLE001 - keep CLI importable when deps are mis
 
 from astra_d.documents import search as filesearch
 import memory
-import notes
-import tasks
+from astra_d.capabilities import notes
+from astra_d.capabilities import tasks
 from astra_d.documents import pdf as pdf_utils
 from astra_d.retrieval import base as retrieval
 
