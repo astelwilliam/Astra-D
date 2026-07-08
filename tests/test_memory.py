@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import memory
+from astra_d.capabilities import memory
 
 
 class MemoryModuleTests(unittest.TestCase):

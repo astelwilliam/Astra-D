@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 
 import main
-import memory
+from astra_d.capabilities import memory
 from astra_d.capabilities import notes
 from astra_d.capabilities import tasks
 
