@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import filesearch
+from astra_d.documents import search as filesearch
 
 
 class FileSearchModuleTests(unittest.TestCase):

@@ -26,11 +26,11 @@ except Exception as exc:  # noqa: BLE001 - keep CLI importable when deps are mis
     ollama = _MissingOllama()
 
 
-import filesearch
+from astra_d.documents import search as filesearch
 import memory
 import notes
 import tasks
-import pdf_utils
+from astra_d.documents import pdf as pdf_utils
 import retrieval
 
 
