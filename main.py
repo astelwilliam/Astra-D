@@ -3,7 +3,7 @@
 from astra_d.memory.engine import MemoryEngine
 from astra_d.retrieval.engine import RetrievalEngine
 from astra_d.retrieval import base as retrieval
-from prompt_builder import PromptBuilder
+from astra_d.prompts.builder import PromptBuilder
 
 from astra_d.conversation.database import ConversationDatabase
 from astra_d.conversation.manager import ConversationManager

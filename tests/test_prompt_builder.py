@@ -1,5 +1,5 @@
 from astra_d.memory.engine import MemoryEngine
-from prompt_builder import PromptBuilder
+from astra_d.prompts.builder import PromptBuilder
 from astra_d.retrieval.engine import RetrievalEngine
 
 
