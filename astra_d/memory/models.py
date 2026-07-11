@@ -54,3 +54,20 @@ class MemoryDecision:
             confidence=1.0,
             reason=reason,
         )
+
+
+@dataclass(frozen=True, slots=True)
+class ImportanceScore:
+    score: float
+    reason: str
+
+    def __post_init__(self):
+        if not 0.0 <= self.score <= 1.0:
+            raise ValueError(
+                f"Score must be between 0.0 and 1.0, got {self.score}"
+            )
+
+        if not self.reason.strip():
+            raise ValueError(
+                "Reason must not be empty"
+            )
