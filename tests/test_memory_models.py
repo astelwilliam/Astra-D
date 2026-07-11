@@ -130,3 +130,53 @@ def test_memory_category_values_are_unique():
     values = [category.value for category in MemoryCategory]
 
     assert len(values) == len(set(values))
+
+
+
+def test_memory_decision_rejects_confidence_below_zero():
+    with pytest.raises(ValueError, match="Confidence must be between"):
+        MemoryDecision(True, MemoryCategory.GOAL, -0.1, "Bad confidence")
+
+
+def test_memory_decision_rejects_confidence_above_one():
+    with pytest.raises(ValueError, match="Confidence must be between"):
+        MemoryDecision(True, MemoryCategory.GOAL, 1.5, "Bad confidence")
+
+
+def test_memory_decision_accepts_boundary_confidence():
+    d0 = MemoryDecision(True, MemoryCategory.KNOWLEDGE, 0.0, "Minimum")
+    d1 = MemoryDecision(True, MemoryCategory.KNOWLEDGE, 1.0, "Maximum")
+
+    assert d0.confidence == 0.0
+    assert d1.confidence == 1.0
+
+
+def test_memory_decision_rejects_empty_reason():
+    with pytest.raises(ValueError, match="Reason must not be empty"):
+        MemoryDecision(True, MemoryCategory.GOAL, 0.9, "")
+
+
+def test_memory_decision_rejects_whitespace_only_reason():
+    with pytest.raises(ValueError, match="Reason must not be empty"):
+        MemoryDecision(True, MemoryCategory.GOAL, 0.9, "   ")
+
+
+def test_memory_decision_rejects_non_ignore_when_not_storing():
+    with pytest.raises(ValueError, match="Category must be IGNORE"):
+        MemoryDecision(False, MemoryCategory.GOAL, 0.8, "Should not happen")
+
+
+def test_memory_decision_allows_ignore_when_not_storing():
+    decision = MemoryDecision(False, MemoryCategory.IGNORE, 0.9, "Not relevant")
+
+    assert decision.should_store is False
+    assert decision.category is MemoryCategory.IGNORE
+
+
+def test_memory_decision_ignore_factory():
+    decision = MemoryDecision.ignore("Greeting, no useful info")
+
+    assert decision.should_store is False
+    assert decision.category is MemoryCategory.IGNORE
+    assert decision.confidence == 1.0
+    assert decision.reason == "Greeting, no useful info"
