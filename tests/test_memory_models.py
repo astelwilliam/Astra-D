@@ -110,16 +110,17 @@ def test_memory_candidate_repr_contains_class_name():
 
 def test_memory_category_contains_expected_values():
     expected = {
-        "ignore",
-        "temporary",
-        "knowledge",
-        "preference",
-        "goal",
-        "project",
-        "relationship",
-        "timeline",
-        "emotion",
-    }
+          "ignore",
+          "identity",
+          "preference",
+          "goal",
+          "project",
+          "task",
+          "fact",
+          "event",
+          "relationship",
+          "emotion",
+}
 
     actual = {category.value for category in MemoryCategory}
 
@@ -144,8 +145,8 @@ def test_memory_decision_rejects_confidence_above_one():
 
 
 def test_memory_decision_accepts_boundary_confidence():
-    d0 = MemoryDecision(True, MemoryCategory.KNOWLEDGE, 0.0, "Minimum")
-    d1 = MemoryDecision(True, MemoryCategory.KNOWLEDGE, 1.0, "Maximum")
+    d0 = MemoryDecision(True, MemoryCategory.FACT, 0.0, "Minimum")
+    d1 = MemoryDecision(True, MemoryCategory.FACT, 1.0, "Maximum")
 
     assert d0.confidence == 0.0
     assert d1.confidence == 1.0

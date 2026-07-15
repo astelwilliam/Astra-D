@@ -4,13 +4,19 @@ from enum import Enum
 
 class MemoryCategory(str, Enum):
     IGNORE = "ignore"
-    TEMPORARY = "temporary"
-    KNOWLEDGE = "knowledge"
+
+    IDENTITY = "identity"
     PREFERENCE = "preference"
+
     GOAL = "goal"
     PROJECT = "project"
+    TASK = "task"
+
+    FACT = "fact"
+    EVENT = "event"
+
     RELATIONSHIP = "relationship"
-    TIMELINE = "timeline"
+
     EMOTION = "emotion"
 
 
